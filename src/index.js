@@ -1,38 +1,45 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
 
-const axios = require('axios');
+const axios = require("axios");
 
-class Pokemon extends Component {
-  constructor(props){
-    
-    super(props)
+const endpoint = "https://pokeapi.co/api/v2/pokemon/1";
 
-    this.state = 
-      axios.get('https://pokeapi.co/api/v2/pokemon/1')
-        .then(function (response) {
-          // handle success
-          console.log(response);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-  }
-
-  componentDidMount(){
-    console.log("=>>>>" + this.state)
-  }
-
-  render() {
-    return (
-      <h2>¡Hazte con todos!</h2>
-      
-    )
-  }
+function getPokemon(endpoint){
+  return axios
+    .get(endpoint)
+    .then(function (response) {
+      console.log(response)
+      return response;
+    })
+    .catch(function (error) {
+    });
 }
 
-ReactDOM.render(
-  <Pokemon />,
-  document.getElementById('root')
-);
+class Pokemon extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+      isLoading: true,
+      name: null,
+    }
+	}
+
+	async componentDidMount() {
+
+    let pokemonData = await getPokemon(endpoint);
+
+    this.state = pokemonData.data;
+
+		console.log("======> " + pokemonData);
+		console.log("======> " + JSON.stringify(this.state.species));
+		console.log("======> " + this.state.species.name);
+	}
+
+	render() {
+		return <h2>¡Hazte con todos!</h2>;
+	}
+}
+
+ReactDOM.render(<Pokemon />, document.getElementById("root"));
